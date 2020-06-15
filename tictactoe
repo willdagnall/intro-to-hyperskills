@@ -1,0 +1,99 @@
+package tictactoe;
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+    private static String[][] m = {{" "," "," "},{" "," "," "},{" "," "," "}};
+    private static final Scanner scanner = new Scanner(System.in);
+    public static String currentSymbol = "X";
+
+    public static void main(String[] args) {
+        print();
+        while (!hasFinished()) {
+            readUserInput();
+            print();
+        }
+    }
+
+    public static void readUserInput() {
+        boolean isValid = false;
+        while (!isValid) {
+            try {
+                System.out.print("Enter the coordinates: ");
+                int userX = scanner.nextInt() - 1;
+                int userY = scanner.nextInt() - 1;
+                if (userX > 2 || userY > 2 || userX < 0 || userY < 0) {
+                    System.out.println("Coordinates should be from 1 to 3!");
+                    continue;
+                }
+                if (m[2 - userY][userX].equals(" ")) {
+                    m[2 - userY][userX] = currentSymbol;
+                    currentSymbol = currentSymbol.equals("X") ? "O" : "X";
+                    isValid = true;
+                } else {
+                    System.out.println("This cell is occupied! Choose another one!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("You should enter numbers!");
+            }
+        }
+    }
+
+    public static boolean hasFinished() {
+        if (checkWinner("O")) {
+            System.out.println("O wins");
+            return true;
+        } else if (checkWinner("X")) {
+            System.out.println("X wins");
+            return true;
+        } else {
+            if (!hasSpace()) {
+                System.out.println("Draw");
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public static boolean checkWinner(String symbol) {
+        if (m[0][0].equals(symbol) && m[1][1].equals(symbol) && m[2][2].equals(symbol)) {
+            return true;
+        }
+        if (m[0][2].equals(symbol) && m[1][1].equals(symbol) && m[2][0].equals(symbol)) {
+            return true;
+        }
+        for (int i = 0; i < 3; i++) {
+            if (m[i][0].equals(symbol) && m[i][1].equals(symbol) && m[i][2].equals(symbol)) {
+                return true;
+            }
+            if (m[0][i].equals(symbol) && m[1][i].equals(symbol) && m[2][i].equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void print() {
+        System.out.println("---------");
+        for (String[] row : m) {
+            System.out.print("| ");
+            for (String c : row) {
+                System.out.print(c + " ");
+            }
+            System.out.println(" |");
+        }
+        System.out.println("---------");
+    }
+
+    public static boolean hasSpace() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (m[i][j].equals(" ")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
